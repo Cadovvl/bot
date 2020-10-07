@@ -3,7 +3,7 @@ version: '3.8'
 services:
   web:
     build: .
-    image: bot
+    image: cadovvl-bot
     restart: always
     command: python /code/main.py
     volumes:
@@ -15,7 +15,7 @@ services:
     depends_on:
       - migrations
   migrations:
-    image: bot
+    image: cadovvl-bot
     command: python /code/manage.py migrate --noinput
     volumes:
       - .:/code
