@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+
+.DS_Store
+*.sqlite3
+media/
+*.pyc
+*.db
+*.pid
+
+# virtualenv
+.venv
+
+
+# dotenv
+.env
+
+# PyCharm
+.idea
+

@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    image: bot
+    restart: always
+    command: python /code/main.py
+    volumes:
+      - ./db_data/:/db_data/
+      - .:/code
+    env_file:
+      - ./.env
+    working_dir: /code
+    depends_on:
+      - migrations
+  migrations:
+    image: bot
+    command: python /code/manage.py migrate --noinput
+    volumes:
+      - .:/code
+      - ./db_data/:/db_data/
