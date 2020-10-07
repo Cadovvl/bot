@@ -12,9 +12,12 @@ services:
       - ./.env
     depends_on:
       - migrations
+
   migrations:
     image: docker.pkg.github.com/cadovvl/bot/cadovvl-bot
     working_dir: /code
-    command: python db/models.py migrate --noinput
+    command: python manage.py migrate
+    env_file:
+      - ./.env
     volumes:
       - ./db_data/:/db_data/
