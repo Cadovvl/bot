@@ -7,8 +7,7 @@ import requests
 import random
 
 from base_subscriptions_bot import BaseSubscriptionsBot
-from bot_adapters import required_args
-from db.models import IntConstants, Subscription
+from bot_decorators import required_args, filtered_users
 from pushes import BaseSubscription, DaSubscription, AdviseSubscription
 
 
@@ -43,6 +42,7 @@ class CadovvlBot(BaseSubscriptionsBot):
             name=subscription.name,
             first=random.randint(0, interval))
 
+    @filtered_users
     @required_args(2)
     def reschedule(self, update, context):
         interval = int(context.args[1])
