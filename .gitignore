@@ -20,6 +20,7 @@ media/
 
 # dotenv
 .env
+.env_prod
 
 # PyCharm
 .idea

@@ -10,7 +10,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 django.setup()
 ## Django
 
-from telegram_adapter import CadovvlBot
+from cadovvl_bot import CadovvlBot
 
 
 logging.basicConfig(level=logging.DEBUG,
