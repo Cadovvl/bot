@@ -86,3 +86,17 @@ class AdviseSubscription(BaseSubscription):
         for c in chats:
             context.bot.send_message(chat_id=c, text=ans["text"])
 
+
+class CurrenciesSubscription(BaseSubscription):
+    CURRENCIES_URL = "https://api.exchangeratesapi.io/latest?base=RUB&symbols=EUR,USD,NOK"
+
+    def call_for_subscribers(self, context: CallbackContext, chats: list):
+        adv = requests.get(self.CURRENCIES_URL)
+        ans = adv.json()
+        text = "USD: {0:.2f} RUB;\nEUR: {1:.2f} RUB;\nNOK: {2:.2f} RUB;"\
+            .format(1.0/ans["rates"]["USD"],
+                    1.0/ans["rates"]["EUR"],
+                    1.0/ans["rates"]["NOK"])
+        for c in chats:
+            context.bot.send_message(chat_id=c, text=text)
+    
