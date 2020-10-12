@@ -1,4 +1,6 @@
+import abc
 import logging
+import random
 from typing import Optional
 
 import requests
@@ -8,7 +10,8 @@ from telegram.ext import CallbackContext
 from db.models import Subscription, IntConstants
 from db_adapters import DBAdapter
 
-class BaseSubscription:
+
+class BaseSubscription(metaclass=abc.ABCMeta):
     def __init__(self, name):
         self.name = name
         self.logger = logging.getLogger("subscription_{0}".format(name))
@@ -19,6 +22,16 @@ class BaseSubscription:
             self.logger.info("No subscribers for {0}".format(self.name))
             return None
         return [u.chat for u in users]
+
+    def __call__(self, context: CallbackContext):
+        chats = self._subscribers()
+        if chats is None:
+            return
+        self.call_for_subscribers(context, chats)
+
+    @abc.abstractmethod
+    def call_for_subscribers(self, context: CallbackContext, chats: list):
+        pass
 
 
 class DaSubscription(BaseSubscription):
@@ -32,15 +45,12 @@ class DaSubscription(BaseSubscription):
         self.counter_name = "COUNTER_FOR_{0}".format(name)
         self.params_name = "{0}_url_params".format(name)
 
-    def __call__(self, context: CallbackContext):
-        chats = self._subscribers()
-        if chats is None:
-            return
-
+    def call_for_subscribers(self, context: CallbackContext, chats: list):
         offset = DBAdapter.get_int_const(self.counter_name, 0)
         if offset >= self.COUNTER_LIMIT:
+            self.logger.info("Refreshing offset for {0}".format(self.name))
             offset = 0
-        DBAdapter.set_int_const(self.counter_name, offset + 1)
+        DBAdapter.set_int_const(self.counter_name, offset + random.randint(1, 10))
 
         resp = requests.get(self.DA_TOKEN, params={
             "client_id": os.getenv("DA_CLIENT_ID"),
@@ -67,15 +77,10 @@ class DaSubscription(BaseSubscription):
             context.bot.send_photo(chat_id=c, photo=img_url)
 
 
-
 class AdviseSubscription(BaseSubscription):
     ADVISE_URL = "http://fucking-great-advice.ru/api/random"
 
-    def __call__(self, context: CallbackContext):
-        chats = self._subscribers()
-        if chats is None:
-            return
-
+    def call_for_subscribers(self, context: CallbackContext, chats: list):
         adv = requests.get(self.ADVISE_URL)
         ans = adv.json()
         for c in chats:
