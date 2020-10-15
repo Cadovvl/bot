@@ -40,3 +40,17 @@ class ChatConfig(models.Model):
         UniqueConstraint(fields=['name', 'chat', 'key'],
                          name='Unique param key per chat')
     ]
+
+
+class TelegramUser(models.Model):
+    username = models.CharField(max_length=200)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+
+
+class MessageHistory(models.Model):
+    user = models.ForeignKey(TelegramUser, on_delete=models.CASCADE, related_name="messages")
+    chat = models.IntegerField()
+    message = models.CharField(max_length=200)
+    time = models.DateField(auto_now=True)
+

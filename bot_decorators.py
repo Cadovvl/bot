@@ -1,7 +1,6 @@
 from functools import wraps
 from logging import Logger
 
-
 def required_args(num: int):
     def inner_adapter(func):
         @wraps(func)

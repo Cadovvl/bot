@@ -7,7 +7,7 @@ import requests
 import os
 
 from telegram.ext import CallbackContext
-from db.models import Subscription, IntConstants
+from db.models import Subscription
 from db_adapters import DBAdapter
 
 
@@ -35,7 +35,7 @@ class BaseSubscription(metaclass=abc.ABCMeta):
 
 
 class DaSubscription(BaseSubscription):
-    COUNTER_LIMIT = 100
+    COUNTER_LIMIT = 200
     DA_SOURCE_KEY = "DA_SOURCE"
     DA_TOKEN = "https://www.deviantart.com/oauth2/token"
     DA_POPULAR = "https://www.deviantart.com/api/v1/oauth2/browse/popular"
@@ -50,7 +50,7 @@ class DaSubscription(BaseSubscription):
         if offset >= self.COUNTER_LIMIT:
             self.logger.info("Refreshing offset for {0}".format(self.name))
             offset = 0
-        DBAdapter.set_int_const(self.counter_name, offset + random.randint(1, 10))
+        DBAdapter.set_int_const(self.counter_name, offset + random.randint(4, 16))
 
         resp = requests.get(self.DA_TOKEN, params={
             "client_id": os.getenv("DA_CLIENT_ID"),
@@ -99,4 +99,3 @@ class CurrenciesSubscription(BaseSubscription):
                     1.0/ans["rates"]["NOK"])
         for c in chats:
             context.bot.send_message(chat_id=c, text=text)
-    
