@@ -43,8 +43,8 @@ class CadovvlBot(BaseSubscriptionsBot):
         user = TelegramUser.objects.get_or_create(
             pk=update.effective_user.id,
             defaults={'username': update.effective_user.username if update.effective_user.username  else update.effective_user.full_name,
-                      'first_name': update.effective_user.first_name,
-                      'last_name': update.effective_user.last_name})
+                      'first_name': update.effective_user.first_name if update.effective_user.first_name else "",
+                      'last_name': update.effective_user.last_name if update.effective_user.last_name else ""})
         MessageHistory.objects.create(
             user=user[0],
             chat=update.effective_chat.id,
