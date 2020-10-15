@@ -59,16 +59,18 @@ class CadovvlBot(BaseSubscriptionsBot):
             .all()\
             .values('user__username', 'user__first_name', 'user__last_name')\
             .annotate(total=Count('user'))\
-            .order_by('total')
+            .order_by('-total')
 
-        message = "Top flooders of this week: \n" + "\n".join(
-            ["{0} {1}: {2} messages".format(u['user__first_name'],
+        message = "Top flooders of this week: \n\n" + "\n".join(
+            ["__*{0} {1}*__:\t{2}\tmessages".format(u['user__first_name'],
                                             u['user__last_name'],
                                             u['total'])
                 for u in mh
             ]
         )
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text=message,
+                                 parse_mode="MarkdownV2")
 
 
     def run_subscription(self,
