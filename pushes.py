@@ -73,8 +73,9 @@ class DaSubscription(BaseSubscription):
 
         res = resp.json()
         img_url = res['results'][0]['content']['src']
+        title = res['results'][0]['title'] if 'title' in res['results'][0] else None
         for c in chats:
-            context.bot.send_photo(chat_id=c, photo=img_url)
+            context.bot.send_photo(chat_id=c, photo=img_url, caption=title)
 
 
 class AdviseSubscription(BaseSubscription):
