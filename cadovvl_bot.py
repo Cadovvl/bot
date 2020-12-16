@@ -26,6 +26,7 @@ class CadovvlBot(BaseSubscriptionsBot):
         self.logger.info("Starting bot")
 
         self.dispatcher.add_handler(CommandHandler("advise", self.advise))
+        self.dispatcher.add_handler(CommandHandler("polymery", self.polymery))
         self.dispatcher.add_handler(CommandHandler("top", self.top))
         self.dispatcher.add_handler(CommandHandler("reschedule", self.reschedule))
 
@@ -116,7 +117,28 @@ class CadovvlBot(BaseSubscriptionsBot):
         ans = adv.json()
         context.bot.send_message(chat_id=update.effective_chat.id, text=ans["text"])
 
+    def polymery(self, update, context):
+        phrase = random.choice(self.poly.split('\n'))
+        context.bot.send_message(chat_id=update.effective_chat.id, text=phrase)
+
     def run(self):
         self.updater.start_polling()
 
+    poly = """Я не понял, вы чё-то, блядь, легко к этому всему, хуйне, относитесь!
+Вы чё, мальчики, охуели, что ли, блядь?
+Чё, блядь, воздух свободы жопу защекотал?
+Я, блядь, где-где добрый, а где-где вы меня заёбываете!
+Или вы, блядь, лохи, сука, работать начинаете, или я вас, твари, блядь, как жеглов давить начну!
+Проектанты хуевы, блядь!
+И если ваши твари, блядь, и прочая, извиняюсь за выражение, хуета, не начнёт, блядь, работать!
+Чё, охуели, что ли, совсем?! Чё за улыбки, блядь?! Я те кто, клоун?
+Хуйня, блядь, демократия! Забудь нахуй о демократии, блядь! Пока я здесь командир, тут тоталитаризм будет.
+Я ебальники скоро бить начну!
+Не доводите до греха, не доводите! А то поздно будет.
+Просрали все полимеры!
+Нет потенции — сваливайте нахуй с рынка! И не позорьтесь! Нихуя сделать не можете!
+Ни одного проекта вовремя не дали! Всё, что дали, — всё переделывается!
+Подвесные потолки, блядь, в сортирах закладывать — это вы мастера! 
+Вы сами понимаете, что вы нули перед ним, блядь?
+По ходу дела, мальчики, надо бы за вас взяться, блядь."""
 
