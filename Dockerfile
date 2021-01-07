@@ -5,5 +5,5 @@ RUN pip install -r /code/requirements.txt
 COPY *.py /code/
 COPY db /code/db
 WORKDIR /code
-RUN python managed.py migrate
+RUN python manage.py migrate
 CMD python main.py
