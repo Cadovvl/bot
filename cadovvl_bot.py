@@ -3,12 +3,13 @@ from datetime import datetime, timedelta
 import os
 
 from django.db import reset_queries, connection
-from django.db.models import Count
+from django.db.models import Count, Sum
 from telegram.ext.filters import Filters
 from telegram.ext import Updater, CommandHandler, Job, CallbackQueryHandler, MessageHandler
 import logging
 import requests
 import random
+import re
 
 from base_subscriptions_bot import BaseSubscriptionsBot
 from bot_decorators import required_args, filtered_users
@@ -28,6 +29,7 @@ class CadovvlBot(BaseSubscriptionsBot):
         self.dispatcher.add_handler(CommandHandler("advise", self.advise))
         self.dispatcher.add_handler(CommandHandler("polymery", self.polymery))
         self.dispatcher.add_handler(CommandHandler("top", self.top))
+        self.dispatcher.add_handler(CommandHandler("true_top", self.true_top))
         self.dispatcher.add_handler(CommandHandler("reschedule", self.reschedule))
 
         self.dispatcher.add_handler(MessageHandler(Filters.all, self.add_top))
@@ -49,7 +51,9 @@ class CadovvlBot(BaseSubscriptionsBot):
         MessageHistory.objects.create(
             user=user[0],
             chat=update.effective_chat.id,
-            message=update.effective_message.text if update.effective_message.text else ""
+            message=update.effective_message.text if update.effective_message.text else "",
+            message_length=len(update.effective_message.text) if update.effective_message.text else 0,
+            message_words=len(re.split(r'\W+', update.effective_message.text)) if update.effective_message.text else 0
         )
 
     def top(self, update, context):
@@ -66,6 +70,29 @@ class CadovvlBot(BaseSubscriptionsBot):
             ["__*{0} {1}*__:\t{2}\tmessages".format(u['user__first_name'],
                                             u['user__last_name'],
                                             u['total'])
+                for u in mh
+            ]
+        )
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text=message,
+                                 parse_mode="MarkdownV2")
+
+
+    def true_top(self, update, context):
+        mh = MessageHistory.objects\
+            .filter(time__gte=datetime.now() - timedelta(days=7))\
+            .filter(chat=update.effective_chat.id)\
+            .select_related('user')\
+            .all()\
+            .values('user__username', 'user__first_name', 'user__last_name')\
+            .annotate(total=Sum('message_length'), words=Sum('message_words'))\
+            .order_by('-total')
+
+        message = "Top flooders of this week: \n\n" + "\n".join(
+            ["__*{0} {1}*__:\t{2}\tsymbols in {3} words".format(u['user__first_name'],
+                                            u['user__last_name'],
+                                            u['total'],
+                                            u['words'])
                 for u in mh
             ]
         )
