@@ -100,3 +100,18 @@ class CurrenciesSubscription(BaseSubscription):
                     1.0/ans["rates"]["NOK"])
         for c in chats:
             context.bot.send_message(chat_id=c, text=text)
+
+class XKCDSubscription(BaseSubscription):
+    XKCD_URL_TEMPLATE = 'https://xkcd.com/{0}/info.0.json'
+
+    def call_for_subscribers(self, context: CallbackContext, chats: list):
+        url = self.XKCD_URL_TEMPLATE.format(random.randint(0, 2000))
+        adv = requests.get(url)
+        ans = adv.json()
+        img = ans["img"]
+
+        title = ans["safe_title"]
+        description = ans["alt"]
+
+        for c in chats:
+            context.bot.send_photo(chat_id=c, photo=img, caption=f"{title}: {description}")

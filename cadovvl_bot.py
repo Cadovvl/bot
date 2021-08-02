@@ -15,7 +15,7 @@ from base_subscriptions_bot import BaseSubscriptionsBot
 from bot_decorators import required_args, filtered_users
 from db.models import TelegramUser, MessageHistory
 from db_adapters import DBAdapter
-from pushes import BaseSubscription, DaSubscription, AdviseSubscription, CurrenciesSubscription
+from pushes import BaseSubscription, DaSubscription, AdviseSubscription, CurrenciesSubscription, XKCDSubscription
 
 
 class CadovvlBot(BaseSubscriptionsBot):
@@ -36,6 +36,7 @@ class CadovvlBot(BaseSubscriptionsBot):
 
         self.run_subscription(DaSubscription("da_art"), 60*60)
         self.run_subscription(AdviseSubscription("advise"), 60*60)
+        self.run_subscription(XKCDSubscription("xkcd"), 5*60*60)
         self.run_subscription(CurrenciesSubscription("currencies"), 60*60*24)
 
         self.run_subscription(DaSubscription("hidden_da_art"), 60*60, hidden=True)
