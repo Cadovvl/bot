@@ -31,6 +31,7 @@ class CadovvlBot(BaseSubscriptionsBot):
         self.dispatcher.add_handler(CommandHandler("top", self.top))
         self.dispatcher.add_handler(CommandHandler("true_top", self.true_top))
         self.dispatcher.add_handler(CommandHandler("reschedule", self.reschedule))
+        self.dispatcher.add_handler(CommandHandler("hello", self.hello))
 
         self.dispatcher.add_handler(MessageHandler(Filters.all, self.add_top))
 
@@ -56,7 +57,13 @@ class CadovvlBot(BaseSubscriptionsBot):
             message_length=len(update.effective_message.text) if update.effective_message.text else 0,
             message_words=len(re.split(r'\W+', update.effective_message.text)) if update.effective_message.text else 0
         )
-
+        
+    def hello(self, update, context):
+        message = "Hello yourself"
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text=message)
+        
+        
     def top(self, update, context):
         mh = MessageHistory.objects\
             .filter(time__gte=datetime.now() - timedelta(days=7))\
