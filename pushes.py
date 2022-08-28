@@ -38,7 +38,7 @@ class DaSubscription(BaseSubscription):
     COUNTER_LIMIT = 200
     DA_SOURCE_KEY = "DA_SOURCE"
     DA_TOKEN = "https://www.deviantart.com/oauth2/token"
-    DA_POPULAR = "https://www.deviantart.com/api/v1/oauth2/browse/popular"
+    DA_POPULAR = "https://www.deviantart.com/api/v1/oauth2/browse/tags"
 
     def __init__(self, name):
         BaseSubscription.__init__(self, name)
