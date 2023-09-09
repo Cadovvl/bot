@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   web:
-    image:  ghcr.io/cadovvl/bot/cadovvl-bot
+    image:  ghcr.io/cadovvl/bot/cadovvl-bot:latest
     restart: always
     working_dir: /code
     command: python main.py
@@ -14,7 +14,7 @@ services:
       - migrations
 
   migrations:
-    image:  ghcr.io/cadovvl/bot/cadovvl-bot
+    image:  ghcr.io/cadovvl/bot/cadovvl-bot:latest
     working_dir: /code
     command: python manage.py migrate
     env_file:
